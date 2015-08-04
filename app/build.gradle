@@ -1,0 +1,62 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "22.0.1"
+
+        defaultConfig.with {
+            applicationId = "org.siprop.android.openclsample"
+            minSdkVersion.apiLevel = 19
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+
+    /*
+     * native build settings
+     */
+    android.ndk {
+        moduleName = "openclsample-jni"
+        CFlags += "-I${file("src/main/jni/CL")}".toString()
+        ldLibs = ["android", "log", "OpenCL"]
+        // ldLibs = ["android", "log", "opencl"]
+        stl = "system"
+        toolchain = "gcc"
+        toolchainVersion = "4.9"
+        // Note that CFlags has a capital C, which is inconsistent with
+        // the naming convention of other properties.  This is a
+        // technical limitation that will be resolved
+        // Other ndk flags configurable here are
+        /*
+         * toolchain = "clang"
+         * toolchainVersion = "3.5"
+         * cppFlags += "-fno-rtti"
+         * cppFlags += "-fno-exceptions"
+         * ldLibs    = ["android", "log"]
+         * stl       = "system"
+         */
+    }
+
+    android.buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles += file('proguard-rules.pro')
+        }
+    }
+
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm7") {
+            ndk.abiFilters += "armeabi-v7a"
+        }
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+}
