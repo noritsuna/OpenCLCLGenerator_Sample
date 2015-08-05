@@ -16,6 +16,8 @@
 #include <string.h>
 #include <android/log.h>
 
+#define MEM_SIZE (128)
+
 jint
 Java_org_siprop_android_openclsample_MainActivity_helloworld( JNIEnv* env,
                                                   jobject thiz )
@@ -32,6 +34,8 @@ Java_org_siprop_android_openclsample_MainActivity_helloworld( JNIEnv* env,
     cl_uint ret_num_platforms;
     cl_int ret;
 
+    char string[MEM_SIZE];
+
     /* Get Platform and Device Info */
     ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
     ret = clGetDeviceIDs( platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
@@ -47,7 +51,7 @@ Java_org_siprop_android_openclsample_MainActivity_helloworld( JNIEnv* env,
 
     /* Create Kernel Program from the source */
     program = clCreateProgramWithSource(context, 1, (const char **)&CLCL_HELLO,
-                                        (const size_t *)&strlen(CLCL_HELLO), &ret);
+                                        (const size_t *)strlen(CLCL_HELLO), &ret);
 
     /* Build Kernel Program */
     ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
